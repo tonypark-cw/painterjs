@@ -2,17 +2,22 @@ const canvas = document.querySelector("#jsCanvas");
 const colors = document.querySelectorAll(".jsColor");
 const range = document.querySelector("#jsRange");
 const btn = document.querySelector("#jsMode");
+const saveBtn = document.querySelector("#jsSave");
 
 const ctx = canvas.getContext("2d");
 
 canvas.width = 500;
 canvas.height = 500;
 
+ctx.fillStyle = 'white';
+ctx.fillRect(0,0,canvas.width, canvas.height);
+
+
 ctx.strokeStyle="#2c2c2c";
 ctx.lineWidth = 2.5;
 
 let painting = false;
-let paintMode = 'FILL';
+let paintMode = 'PAINT';
 
 function handleRangeChange(event){
     const size = event.target.value;
@@ -21,8 +26,12 @@ function handleRangeChange(event){
 
 function handleColorClick(event){
     let color = event.target.style.backgroundColor;
-    colors.forEach(color => color.style.border = "none");
-    event.target.style.border = "0.5px solid black";
+    colors.forEach(color => {
+        color.style.border = "none";
+        color.style.borderRadius = "25px";
+    });
+    event.target.style.border = "2px solid "+color;
+    event.target.style.borderRadius = "8px";
     ctx.strokeStyle = color;
 }
 
@@ -40,7 +49,6 @@ function onMouseMove(event){
     }else if(paintMode === 'FILL'){
         ctx.fillStyle = ctx.strokeStyle;
         ctx.fillRect(0,0, canvas.width, canvas.height);
-        ctx.fill();
     }
 }
 
@@ -57,8 +65,13 @@ if(canvas){
     canvas.addEventListener("mousedown", startPainting);
     canvas.addEventListener("mouseup", stopPainting);
     canvas.addEventListener("mouseleave", stopPainting);
+    canvas.addEventListener("contextmenu", handleCM );
 }
 
+function handleCM(event){
+    event.preventDefault();
+    console.log(event);
+}
 
 Array.from(colors).forEach(color => color.addEventListener("click", handleColorClick));
 if(range){
@@ -78,4 +91,16 @@ function handleModeClick(event){
         btn.innerText = "FILL";
         paintMode = 'FILL';
     }
+}
+
+function handleSaveClick(event){
+    const image = canvas.toDataURL("image/webp");
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = "PaintJS[EXPORT]";
+    link.click()
+}
+
+if(saveBtn){
+    saveBtn.addEventListener("click", handleSaveClick);
 }
