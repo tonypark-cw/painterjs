@@ -97,7 +97,7 @@ function handleSaveClick(event){
     const image = canvas.toDataURL("image/webp");
     const link = document.createElement("a");
     link.href = image;
-    link.download = "PaintJS[EXPORT]";
+    link.download = "PaintJS[🎁]";
     link.click()
 }
 
